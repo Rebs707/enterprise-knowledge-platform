@@ -1,0 +1,6 @@
+services:
+  enterprise-knowledge-platform:
+    build: .
+    container_name: enterprise-knowledge-platform
+    ports:
+      - "8000:8000"
