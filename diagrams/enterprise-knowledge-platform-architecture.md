@@ -1,3 +1,6 @@
+# Enterprise Knowledge Platform Architecture
+
+```text
                    Agentic Control Plane
                             |
                             v
