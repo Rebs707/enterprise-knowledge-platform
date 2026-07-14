@@ -8,8 +8,8 @@
                             |
      -------------------------------------------------
      |               |              |               |
-Document Agent   Search Agent   Knowledge Graph   Recommendation
-                                     Agent            Agent
+Document Agent   Search Agent   Knowledge Graph   Recommendation Agent
+                                     Agent
      \               |              |               /
       \              |              |              /
         -------- Knowledge Workflow --------
