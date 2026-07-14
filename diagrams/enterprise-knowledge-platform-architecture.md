@@ -1,18 +1,19 @@
 # Enterprise Knowledge Platform Architecture
 
-```text
-                   Agentic Control Plane
-                            |
-                            v
-              Enterprise Knowledge Platform
-                            |
-     -------------------------------------------------
-     |               |              |               |
-Document Agent   Search Agent   Knowledge Graph   Recommendation Agent
-                                     Agent
-     \               |              |               /
-      \              |              |              /
-        -------- Knowledge Workflow --------
-                      |
-                      v
-          Enterprise Knowledge Repository
+```mermaid
+graph TD
+    ACP[Agentic Control Plane]
+
+    ACP --> EKP[Enterprise Knowledge Platform]
+
+    EKP --> D[Document Agent]
+    EKP --> S[Search Agent]
+    EKP --> KG[Knowledge Graph Agent]
+    EKP --> R[Recommendation Agent]
+
+    D --> W[Knowledge Workflow]
+    S --> W
+    KG --> W
+    R --> W
+
+    W --> KR[Enterprise Knowledge Repository]
