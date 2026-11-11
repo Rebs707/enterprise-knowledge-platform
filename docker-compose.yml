@@ -4,3 +4,8 @@ services:
     container_name: enterprise-knowledge-platform
     ports:
       - "8000:8000"
+    volumes:
+      - ekp-data:/app/data
+
+volumes:
+  ekp-data:
