@@ -85,7 +85,7 @@ def test_upload_endpoint_rejects_unsupported_file_type(client):
 def test_upload_endpoint_rejects_invalid_utf8(client):
     response = client.post(
         "/documents",
-        files={"file": ("guide.txt", b"\\xff\\xfe", "text/plain")},
+        files={"file": ("guide.txt", b"\xff\xfe", "text/plain")},
     )
 
     assert response.status_code == 400
