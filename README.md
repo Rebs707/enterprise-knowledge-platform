@@ -11,6 +11,7 @@ A local-first enterprise document intelligence platform. The current milestone i
 - Search indexed chunks using deterministic, case-insensitive keyword scoring.
 - Retrieve document metadata by document ID.
 - Run locally or in Docker; the Docker Compose configuration uses a named volume for SQLite data.
+- Exercise the HTTP API through automated FastAPI integration tests.
 
 ## API
 
@@ -35,6 +36,24 @@ uvicorn app.main:app --reload
 
 The SQLite database defaults to `data/knowledge.db`. Override its location with the `EKP_DB_PATH` environment variable.
 
+## Run tests
+
+```bash
+pytest -q
+```
+
+The automated suite currently contains 18 tests:
+
+- 10 document-processing, chunking, persistence, metadata and keyword-search tests.
+- 1 workflow test using a temporary SQLite database.
+- 7 HTTP-level API integration tests covering health, upload, metadata retrieval, search, result limits, unknown document IDs, unsupported file types, invalid UTF-8 and oversized uploads.
+
+The API integration tests use FastAPI's test client with an isolated temporary database, so they do not write test documents into the default local data store.
+
+GitHub Actions is configured to install the pinned dependencies and run the test suite on pushes and pull requests targeting `main`. A workflow run must complete successfully before its result can be described as CI-verified.
+
+The API was also manually smoke-tested locally for health, document upload, metadata retrieval, keyword search, unknown-document handling, unsupported file type, invalid UTF-8, and oversized upload. Those manual checks are separate from the automated test suite.
+
 ## Retrieval behaviour
 
 Search is deterministic keyword matching, not semantic retrieval:
@@ -45,16 +64,6 @@ Search is deterministic keyword matching, not semantic retrieval:
 4. Matching chunks are sorted by descending score, then filename and chunk index. The requested result limit is bounded to 1–50.
 
 This implementation does not use embeddings, semantic similarity, an LLM, or a learned ranking model.
-
-## Run tests
-
-```bash
-pytest -q
-```
-
-The current automated suite contains 11 tests: 10 document-processing/storage/search tests and one workflow test. These tests exercise service and workflow behaviour; they are not HTTP-level API integration tests.
-
-The API was also manually smoke-tested locally for health, document upload, metadata retrieval, keyword search, unknown-document handling, unsupported file type, invalid UTF-8, and oversized upload. Those manual checks are separate from the automated test count.
 
 ## Docker
 
@@ -81,4 +90,4 @@ This release does **not** implement PDF/DOCX parsing, embeddings, vector search,
 
 ## Technology
 
-Python, FastAPI, SQLite, pytest, Docker.
+Python, FastAPI, SQLite, pytest, HTTPX, Docker, GitHub Actions.
