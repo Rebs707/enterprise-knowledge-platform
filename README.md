@@ -10,7 +10,7 @@ A local-first enterprise document intelligence platform. The current milestone i
 - Persist document metadata, SHA-256 digests, and chunks in SQLite.
 - Search indexed chunks using deterministic, case-insensitive keyword scoring.
 - Retrieve document metadata by document ID.
-- Run locally or in Docker.
+- Run locally or in Docker; the Docker Compose configuration uses a named volume for SQLite data.
 
 ## API
 
@@ -35,22 +35,47 @@ uvicorn app.main:app --reload
 
 The SQLite database defaults to `data/knowledge.db`. Override its location with the `EKP_DB_PATH` environment variable.
 
+## Retrieval behaviour
+
+Search is deterministic keyword matching, not semantic retrieval:
+
+1. The query is lowercased and tokenized into unique alphanumeric terms of at least two characters.
+2. Each stored chunk is checked using case-insensitive substring occurrence counts for those terms.
+3. A chunk's score is the sum of its matching term occurrence counts.
+4. Matching chunks are sorted by descending score, then filename and chunk index. The requested result limit is bounded to 1–50.
+
+This implementation does not use embeddings, semantic similarity, an LLM, or a learned ranking model.
+
 ## Run tests
 
 ```bash
 pytest -q
 ```
 
+The current automated suite contains 11 tests: 10 document-processing/storage/search tests and one workflow test. These tests exercise service and workflow behaviour; they are not HTTP-level API integration tests.
+
+The API was also manually smoke-tested locally for health, document upload, metadata retrieval, keyword search, unknown-document handling, unsupported file type, invalid UTF-8, and oversized upload. Those manual checks are separate from the automated test count.
+
 ## Docker
+
+Build and run with Docker:
 
 ```bash
 docker build -t enterprise-knowledge-platform .
 docker run --rm -p 8000:8000 -v ekp-data:/app/data enterprise-knowledge-platform
 ```
 
+Or use Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+The Compose service mounts the named `ekp-data` volume at `/app/data`, preserving the default SQLite database across container recreation. Docker image and container runtime verification are not claimed by the local test results above.
+
 ## Architecture and current boundaries
 
-The document ingestion path is: FastAPI upload -> document validation/text extraction -> overlapping chunking -> SQLite metadata and chunk persistence. The query path is: FastAPI search -> keyword scoring over stored chunks -> ranked excerpts with source document IDs.
+The document ingestion path is: FastAPI upload -> document validation/text extraction -> overlapping chunking -> SQLite metadata and chunk persistence. The query path is: FastAPI search -> deterministic keyword occurrence scoring over stored chunks -> ranked excerpts with source document IDs.
 
 This release does **not** implement PDF/DOCX parsing, embeddings, vector search, an LLM, Amazon Bedrock, S3, an external vector database, knowledge-graph construction, recommendation logic, authentication, or per-user document authorization. Those are future increments and must not be interpreted as existing capabilities.
 
