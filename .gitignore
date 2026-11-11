@@ -1,20 +1,23 @@
-# Virtual Environment
+# Virtual environments
 venv/
+.venv/
 
 # Python
 __pycache__/
 *.py[cod]
 *.pyo
 
-# Pytest
+# Tests
 .pytest_cache/
 
-# Environment
+# Local data and environment
+data/
+*.db
+*.db-shm
+*.db-wal
 .env
 
-# IDE
+# IDE and OS
 .vscode/
 .idea/
-
-# OS
 .DS_Store
