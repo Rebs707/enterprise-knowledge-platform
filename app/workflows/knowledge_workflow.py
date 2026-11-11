@@ -1,22 +1,12 @@
-from app.agents.document_agent import DocumentAgent
 from app.agents.search_agent import SearchAgent
-from app.agents.knowledge_graph_agent import KnowledgeGraphAgent
-from app.agents.recommendation_agent import RecommendationAgent
+from app.services.knowledge_store import KnowledgeStore
 
 
 class KnowledgeWorkflow:
+    """Coordinates the currently implemented document-retrieval capability."""
 
-    def __init__(self):
-        self.document = DocumentAgent()
-        self.search = SearchAgent()
-        self.graph = KnowledgeGraphAgent()
-        self.recommendation = RecommendationAgent()
+    def __init__(self, store: KnowledgeStore | None = None):
+        self.search = SearchAgent(store=store)
 
     def run(self, topic: str):
-
-        return {
-            "document": self.document.process(topic),
-            "search": self.search.search(topic),
-            "knowledge_graph": self.graph.build(topic),
-            "recommendation": self.recommendation.recommend(topic)
-        }
+        return self.search.search(topic)
