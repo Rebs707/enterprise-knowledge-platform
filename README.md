@@ -1,6 +1,6 @@
 # Enterprise Knowledge Platform
 
-A local-first enterprise document intelligence platform. The current milestone implements secure, bounded document ingestion, text chunking, persistent metadata/chunk storage, and keyword retrieval behind a FastAPI service.
+A local-first enterprise document intelligence platform. The current milestone implements validated, size-bounded document ingestion, text chunking, persistent metadata/chunk storage, and keyword retrieval behind a FastAPI service.
 
 ## Implemented in the current release
 
